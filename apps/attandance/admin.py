@@ -1,13 +1,23 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
-
+from django.utils.translation import gettext_lazy as _
 from .models import (
     Organization, InsGroups, Attandance, OrganizationDocument, News, AttandanceFile, CustomUser, DemandandSupply
 )
 from import_export.admin import ImportExportModelAdmin
 
 from .resources import CustomUserResource
+
+
+admin.site.unregister(Group)
+
+Group._meta.verbose_name = _("Rollar")
+Group._meta.verbose_name_plural = _("Rollar")
+
+@admin.register(Group)
+class CustomGroupAdmin(admin.ModelAdmin):
+    pass
 
 
 class CustomUserAdmin(ImportExportModelAdmin, UserAdmin):
@@ -83,11 +93,6 @@ class InsGroupsAdmin(admin.ModelAdmin):
 class NewsAdmin(admin.ModelAdmin):
     list_display = ('title', 'created_at')
     search_fields = ('title',)
-
-
-# @admin.register(Attandance)
-# class AttandanceAdmin(admin.ModelAdmin):
-#     pass
 
 
 @admin.register(AttandanceFile)

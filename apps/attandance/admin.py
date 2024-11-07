@@ -85,9 +85,9 @@ class NewsAdmin(admin.ModelAdmin):
     search_fields = ('title',)
 
 
-@admin.register(Attandance)
-class AttandanceAdmin(admin.ModelAdmin):
-    pass
+# @admin.register(Attandance)
+# class AttandanceAdmin(admin.ModelAdmin):
+#     pass
 
 
 @admin.register(AttandanceFile)

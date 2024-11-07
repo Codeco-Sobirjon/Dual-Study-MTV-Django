@@ -10,6 +10,10 @@ from import_export.admin import ImportExportModelAdmin
 from .resources import CustomUserResource
 
 
+admin.site.site_header = "Davomat Platformasi"
+admin.site.site_title = "Davomat Platformasi"
+admin.site.index_title = "Xush kelibsiz Dual ta'lim va davmoat platformasi"
+
 admin.site.unregister(Group)
 
 Group._meta.verbose_name = _("Rollar")

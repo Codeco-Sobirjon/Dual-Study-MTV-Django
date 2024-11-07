@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Buyruqlar</h1>
+
+    <div class="d-flex justify-content-between">
+        {% if documant1_url %}
+            <div style="flex: 1; margin-right: 10px;">  <!-- Adjust margin as needed -->
+                <h2>Tashkilot buyrug'i</h2>
+                <canvas id="pdf-canvas1" style="width: 100%; height: auto;"></canvas>
+                <script>
+                    const url1 = "{{ documant1_url }}";
+
+                    const loadingTask1 = pdfjsLib.getDocument(url1);
+                    loadingTask1.promise.then(pdf => {
+                        // Fetch the first page
+                        pdf.getPage(1).then(page => {
+                            const scale = 1.5; // Scale for the PDF rendering
+                            const viewport = page.getViewport({ scale: scale });
+                            const canvas1 = document.getElementById('pdf-canvas1');
+                            const context1 = canvas1.getContext('2d');
+                            canvas1.height = viewport.height;
+                            canvas1.width = viewport.width;
+
+                            const renderContext1 = {
+                                canvasContext: context1,
+                                viewport: viewport
+                            };
+                            page.render(renderContext1);
+                        });
+                    }).catch(error => {
+                        console.error("Error loading PDF: ", error);
+                    });
+                </script>
+            </div>
+        {% else %}
+            <p>Tashkilot buyrug'i PDF not found.</p>
+        {% endif %}
+
+        {% if documant2_url %}
+            <div style="flex: 1; margin-left: 10px;">  <!-- Adjust margin as needed -->
+                <h2>Tiiamebb buyrug'i</h2>
+                <canvas id="pdf-canvas2" style="width: 100%; height: auto;"></canvas>
+                <script>
+                    const url2 = "{{ documant2_url }}";
+
+                    const loadingTask2 = pdfjsLib.getDocument(url2);
+                    loadingTask2.promise.then(pdf => {
+                        // Fetch the first page
+                        pdf.getPage(1).then(page => {
+                            const scale = 1.5; // Scale for the PDF rendering
+                            const viewport = page.getViewport({ scale: scale });
+                            const canvas2 = document.getElementById('pdf-canvas2');
+                            const context2 = canvas2.getContext('2d');
+                            canvas2.height = viewport.height;
+                            canvas2.width = viewport.width;
+
+                            const renderContext2 = {
+                                canvasContext: context2,
+                                viewport: viewport
+                            };
+                            page.render(renderContext2);
+                        });
+                    }).catch(error => {
+                        console.error("Error loading PDF: ", error);
+                    });
+                </script>
+            </div>
+        {% else %}
+            <p>Tiiamebb buyrug'i PDF not found.</p>
+        {% endif %}
+    </div>
+{% endblock content %}

@@ -1,0 +1,39 @@
+{% extends 'base_stu.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Talab Takliflar yuborish</h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" action="{% url 'demand_supply_create_for_student' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="mb-3">
+                                <label for="comment" class="form-label">Text</label>
+                                <textarea class="form-control" name="comment" id="comment" placeholder="Taklif va talablarni kiriting"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <input type="file" name="file" id="file" class="form-control d-none" onchange="updateFileName(this)">
+                                <label for="file" class="btn btn-secondary">Faylni tanlang</label>
+                                <span id="file-name" class="text-muted ml-2">Tanlangan fayl yo'q</span>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Yuborish</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateFileName(input) {
+        const fileName = input.files[0] ? input.files[0].name : 'Tanlangan fayl yo\'q';
+        document.getElementById('file-name').textContent = fileName;
+    }
+</script>
+{% endblock content %}

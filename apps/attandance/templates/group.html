@@ -1,0 +1,118 @@
+    {% extends 'base.html' %}
+    {% load tz %}
+    {% block content %}
+
+    <!-- Display Messages -->
+    {% if messages %}
+        <div class="alert alert-dismissible fade show" role="alert">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} mt-2" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div class="col-lg-4 col-md-6">
+                        <h4 class="card-title">Guruhlar</h4>
+                        <p class="card-title-desc">Guruhni tanlaysiz va studentlarni ko'rasiz</p>
+                    </div>
+                    <div class="mb-3 col-lg-4 col-md-6">
+                        <form id="group-form" method="GET" action="{% url 'groups_student' %}">
+                            <label for="choices-single-default" class="form-label font-size-13 text-muted"></label>
+                            <select class="form-control" name="group" data-trigger id="choices-single-default" onchange="document.getElementById('group-form').submit();">
+                                <option value="">Tanlang</option>
+                                {% for item in group_list %}
+                                <option value="{{ item.id }}">{{ item.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Additional card body content can go here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+    <form method="POST" action="{% url 'add_attendance' %}" enctype="multipart/form-data" onsubmit="return validateForm()">
+        {% csrf_token %}
+        <table class="table align-middle datatable dt-responsive table-check nowrap" style="width: 100%;">
+            <thead>
+                <tr class="bg-transparent">
+                    <th style="width: 30px;">
+                        <div class="form-check font-size-16">
+                            <input type="checkbox" class="form-check-input" id="checkAll" onclick="toggleAll(this)">
+                            <label class="form-check-label" for="checkAll"></label>
+                        </div>
+                    </th>
+                    <th style="width: 120px;">ID</th>
+                    <th>FIO</th>
+                    <th>Davomati</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stu in group_data %}
+                <tr>
+                    <td>
+                        <div class="form-check font-size-16">
+                            <input type="checkbox" class="form-check-input" name="students" value="{{ stu.id }}">
+                            <label class="form-check-label"></label>
+                        </div>
+                    </td>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ stu.first_name }} {{ stu.last_name }}</td>
+                    <td>
+                        <ul class="list-unstyled mb-0">
+                            {% for record in attendance_data %}
+                                {% if record.student == stu.get_full_name %}
+                                <li>
+                                    <input type="checkbox" id="attendance_{{ stu.id }}_{{ record.date|date:'Y-m-d' }}"
+                                           value="1" {% if record.coming %}checked{% endif %} disabled>
+                                    <label for="attendance_{{ stu.id }}_{{ record.date|date:'Y-m-d' }}">
+                                        {{ record.date|date:'Y-m-d' }}
+                                    </label>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="mb-3">
+            <input type="file" name="file" id="file" class="form-control d-none" onchange="updateFileName(this)" required>
+            <label for="file" class="btn btn-secondary">Faylni tanlang</label>
+            <span id="file-name" class="text-muted ml-2">Tanlangan fayl yo'q</span>
+        </div>
+        <button type="submit" class="btn btn-primary">Davomat olish</button>
+    </form>
+</div>
+
+<script>
+    function toggleAll(source) {
+        let checkboxes = document.getElementsByName('students');
+        checkboxes.forEach(checkbox => checkbox.checked = source.checked);
+    }
+
+    function updateFileName(input) {
+        document.getElementById('file-name').innerText = input.files[0] ? input.files[0].name : "Tanlangan fayl yo'q";
+    }
+
+    function validateForm() {
+        let fileInput = document.getElementById('file');
+        if (!fileInput.files.length) {
+            alert("Faylni tanlash shart!");
+            return false;
+        }
+        return true;
+    }
+</script>
+    {% endblock content %}

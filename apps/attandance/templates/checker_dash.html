@@ -1,0 +1,97 @@
+{% extends 'base_checker.html' %}
+
+{% block content %}
+<!-- Display Messages -->
+{% if messages %}
+    <div class="alert alert-dismissible fade show" role="alert">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} mt-2" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="col-lg-4 col-md-6">
+                    <h4 class="card-title">Guruhlar</h4>
+                    <p class="card-title-desc">Guruhni tanlaysiz va studentlarni ko'rasiz</p>
+                </div>
+                <div class="mb-3 col-lg-4 col-md-6">
+                    <form id="group-form" method="GET" action="{% url 'checker_dashboard' %}">
+                        <select class="form-control" name="group" data-trigger id="choices-single-default" onchange="document.getElementById('group-form').submit();">
+                            <option value="">Tanlang</option>
+                            {% for item in group_list %}
+                                <option value="{{ item.id }}" {% if item.id|stringformat:"s" == group_id %}selected{% endif %}>{{ item.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Additional card body content can go here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table align-middle datatable dt-responsive table-check nowrap" style="width: 100%;">
+        <thead>
+            <tr class="bg-transparent">
+                <th style="width: 120px;">ID</th>
+                <th>FIO</th>
+                <th>Davomati</th>
+                <th>Qoldirilgan kunlar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stu in group_data %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ stu.first_name }} {{ stu.last_name }}</td>
+                    <td>
+                        <ul class="list-unstyled mb-0">
+                            {% for record in attendance_data %}
+                                {% if record.student == stu.first_name|stringformat:"s"|add:" "|add:stu.last_name %}
+                                    {% for attendance in record.attendance_records %}
+                                        <li>
+                                            {% if attendance.coming %}
+                                                <span class="text-success" title="Qatnashgan">
+                                                    <i class="fas fa-check-circle"></i> {{ attendance.date|date:'Y-m-d' }}
+                                                </span>
+                                            {% else %}
+                                                <span class="text-danger" title="Qatnashmagan">
+                                                    <i class="fas fa-times-circle"></i> {{ attendance.date|date:'Y-m-d' }}
+                                                </span>
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td>
+                        <ul class="list-unstyled mb-0">
+                            {% for missing in list_not_coming %}
+                                {% if missing.student == stu.first_name|stringformat:"s"|add:" "|add:stu.last_name %}
+                                    {% for missing_date in missing.missing_dates %}
+                                        <li>
+                                            <span class="text-warning">
+                                                <i class="fas fa-exclamation-circle"></i> {{ missing_date|date:'Y-m-d' }}
+                                            </span>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

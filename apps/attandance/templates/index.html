@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .carousel-item img {
+        width: 100%;
+        height: 70vh; /* Smaller height for mobile screens */
+        object-fit: fill;
+
+    }
+
+    /* Media query for mobile screens */
+    @media (max-width: 768px) {
+        .carousel-item img {
+            height: 50vh; /* Reduce height on smaller screens */
+        }
+        .carousel-caption {
+            font-size: 14px; /* Smaller font size for captions on mobile */
+            text-align: center;
+        }
+    }
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+
+    .pagination a {
+        padding: 8px 12px;
+        margin: 4px;
+        border: 1px solid #007bff;
+        color: #007bff;
+        text-decoration: none;
+        border-radius: 4px;
+    }
+
+    .pagination a:hover {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .pagination .current {
+        padding: 8px 12px;
+        margin: 4px;
+        font-weight: bold;
+        color: #007bff;
+    }
+
+    /* Media query for mobile screens */
+    @media (max-width: 768px) {
+        .pagination a,
+        .pagination .current {
+            padding: 6px 10px;
+            font-size: 14px; /* Adjust font size for mobile */
+        }
+    }
+    .card-img-top {
+        width: 100%;
+        height: 400px; /* Smaller fixed height for mobile */
+        object-fit: cover;
+    }
+
+    @media (max-width: 768px) {
+        .card-img-top {
+            height: 250px; /* Further reduce height for smaller screens */
+        }
+
+        .card-body h4 {
+            font-size: 18px; /* Adjust card title font size */
+        }
+
+        .card-body p {
+            font-size: 14px; /* Adjust description font size */
+        }
+    }
+</style>
+
+<div class="col-xl-12">
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">So'ngi yangiliklar</h4>
+        </div><!-- end card header -->
+
+        <div class="card-body">
+            <div id="carouselExampleCaption" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner" role="listbox">
+                    {% for last_news in last_news %}
+                        <div class="carousel-item{% if forloop.first %} active{% endif %}">
+                            <img src="{{ last_news.img.url }}" alt="{{ last_news.title }}"  class="d-block img-fluid">
+                            <div class="carousel-caption d-none d-md-block text-white-50">
+                                <h5 class="text-white">{{ last_news.title }}</h5>
+                                <p>
+                                    {% if last_news.description|length > 50 %}
+                                        {{ last_news.description|slice:":50" }}...
+                                    {% else %}
+                                        {{ last_news.description }}
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div><!-- end carousel-inner -->
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaption" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Orqaga</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaption" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Oldinga</span>
+                </button>
+            </div><!-- end carousel -->
+        </div><!-- end card-body -->
+    </div><!-- end card -->
+</div> <!-- end col -->
+
+<div class="row">
+    <div class="col-12">
+        <h4 class="mt-6 mb-6">Yangiliklar</h4>
+        <div class="card-deck-wrapper">
+            <div class="card-group">
+                <div class="row">
+                    {% for news_item in news %}
+                    <div class="col-md-6 col-sm-6"> <!-- Adjusted for mobile responsiveness -->
+                        <div class="card mb-12 flex-wrap">
+                            <img class="card-img-top img-fluid" src="{{ news_item.img.url }}" alt="{{ news_item.title }}">
+                            <div class="card-body">
+                                <h4 class="card-title">{{ news_item.title }}</h4>
+                                <p class="card-text">
+                                    {% if news_item.description|length > 50 %}
+                                        {{ news_item.description|slice:":50" }}...
+                                    {% else %}
+                                        {{ news_item.description }}
+                                    {% endif %}
+                                </p>
+                                <p class="card-text">
+                                    <small class="text-muted">{{ news_item.created_at|date:"Y-m-d" }}</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-md-12 col-sm-12 align-items-center">
+                        <div class="card mb-4" style="max-width: 600px; text-align: center;">
+                            <div class="card-body">
+                                <h4 class="card-title">Hech qanday yangilik mavjud emas</h4>
+                                <p class="card-text">Hozirda ko'rsatiladigan yangilik maqolalari yo'q.</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div><!-- end col -->
+</div>
+
+<div class="pagination mb-5">
+    <span class="step-links">
+        {% if news.has_previous %}
+            <a href="?page=1">&laquo; Birinchisi</a>
+            <a href="?page={{ news.previous_page_number }}">Orqaga</a>
+        {% endif %}
+
+        <span class="current">
+            Sahifa {{ news.number }} of {{ news.paginator.num_pages }}.
+        </span>
+
+        {% if news.has_next %}
+            <a href="?page={{ news.next_page_number }}">Oldinga</a>
+            <a href="?page={{ news.paginator.num_pages }}">So'ngisi &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+{% endblock content %}

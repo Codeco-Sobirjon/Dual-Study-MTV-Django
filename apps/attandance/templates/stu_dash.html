@@ -1,0 +1,82 @@
+{% extends 'base_stu.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Qatnashgan Kunlari</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered border-primary mb-0">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Davomat Kunlari</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for attendance in attendance_list %}
+                                <tr>
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td>{{ attendance.created_at }}</td>  <!-- Displaying attendance date -->
+                                    <td>
+                                        <i class="fas fa-check-circle" style="color: green;" aria-hidden="true"></i>
+                                    </td>  <!-- Status for attended -->
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center">No attendance records found.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- end card body -->
+        </div>
+        <!-- end card -->
+
+<div class="col-xl-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Qatnashmagan kunlari</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                <table class="table table-bordered border-primary mb-0">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Davomat Kunlari</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for date in missing_dates %}
+                                <tr>
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td>{{ date }}</td>  <!-- Displaying attendance date -->
+                                    <td>
+                                        <i class="fas fa-times-circle" style="color: red;" aria-hidden="true"></i>
+                                    </td>  <!-- Status for attended -->
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center">No attendance records found.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+            </div>
+            </div>
+            <!-- end card body -->
+        </div>
+        <!-- end card -->
+    </div>
+    </div>
+    <!-- end col -->
+</div>
+{% endblock content %}
